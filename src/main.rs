@@ -1,3 +1,9 @@
+pub mod options;
+
+use crate::options::Options;
+
 fn main() {
-    println!("Hello, world!");
+    let options = Options::from_args();
+
+    println!("{:?}", options);
 }
