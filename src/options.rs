@@ -9,8 +9,8 @@ struct CliOptions {
 
 #[derive(Debug)]
 pub struct Options {
-    time: f64,
-    countdown: bool,
+    pub time: f64,
+    pub countdown: bool,
 }
 
 impl Options {
