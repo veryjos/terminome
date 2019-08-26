@@ -2,9 +2,11 @@ use tokio;
 
 mod options;
 mod timer;
+mod render;
 
 use crate::options::Options;
 use crate::timer::{Timer, TimerEvent};
+use crate::render::render_time;
 
 #[tokio::main]
 async fn main() {
@@ -16,11 +18,10 @@ async fn main() {
 
         match event {
             TimerEvent::Tick { time } => {
-                println!("{}", time);
+                render_time(time);
             },
 
             TimerEvent::Complete => {
-                println!("Done!");
                 break;
             },
         }
