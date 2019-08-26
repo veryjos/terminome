@@ -12,7 +12,7 @@ async fn main() {
     let mut timer = Timer::new(&options);
 
     loop {
-        let event = timer.get_event().await;
+        let event = timer.get_next_event().await;
 
         match event {
             TimerEvent::Tick { time } => {
