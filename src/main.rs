@@ -4,7 +4,7 @@ pub mod options;
 pub mod timer;
 
 use crate::options::Options;
-use crate::timer::Timer;
+use crate::timer::{Timer, TimerEvent};
 
 #[tokio::main]
 async fn main() {
@@ -14,6 +14,10 @@ async fn main() {
     loop {
         let event = timer.get_event().await;
 
-        println!("{}", event.time);
+        match event {
+            TimerEvent::Tick { time } => {
+                println!("{}", time);
+            }
+        }
     }
 }

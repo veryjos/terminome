@@ -3,8 +3,9 @@ use tokio::{self, timer::{Delay}};
 
 use crate::options::Options;
 
-pub struct TimerEvent {
-    pub time: f64,
+
+pub enum TimerEvent {
+    Tick { time: f64 }
 }
 
 pub struct Timer {
@@ -29,6 +30,8 @@ impl Timer {
         let wait_time = 1000 - ((now - self.start_time).as_millis() % 1000);
         Delay::new(now + Duration::from_millis(wait_time as u64)).await;
 
-        TimerEvent { time: (Instant::now() - self.start_time).as_secs_f64() }
+        TimerEvent::Tick {
+            time: (Instant::now() - self.start_time).as_secs_f64()
+        }
     }
 }
