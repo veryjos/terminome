@@ -4,11 +4,12 @@ use tokio::{self, timer::{Delay}};
 use crate::options::Options;
 
 pub enum TimerEvent {
-    Tick { time: f64 }
+    Tick { time: f64 },
+    Complete,
 }
 
 pub struct Timer {
-    time: f64,
+    duration: Duration,
     countdown: bool,
     start_time: Instant,
 }
@@ -16,13 +17,18 @@ pub struct Timer {
 impl Timer {
     pub fn new(options: &Options) -> Self {
         Timer {
-            time: options.time,
+            duration: Duration::from_secs_f64(options.time),
             countdown: options.countdown,
             start_time: Instant::now(),
         }
     }
 
     pub async fn get_event(&mut self) -> TimerEvent {
+        // immediately complete if time is greater than start + duration
+        if self.countdown && Instant::now() >= self.start_time + self.duration {
+            return TimerEvent::Complete;
+        }
+
         // complete when we need to render the next frame
         // aka, at the next whole second
         let now = Instant::now();

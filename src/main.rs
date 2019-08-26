@@ -17,7 +17,12 @@ async fn main() {
         match event {
             TimerEvent::Tick { time } => {
                 println!("{}", time);
-            }
+            },
+
+            TimerEvent::Complete => {
+                println!("Done!");
+                break;
+            },
         }
     }
 }
