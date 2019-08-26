@@ -1,9 +1,19 @@
+use tokio;
+
 pub mod options;
+pub mod timer;
 
 use crate::options::Options;
+use crate::timer::Timer;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let options = Options::from_args();
+    let mut timer = Timer::new(&options);
 
-    println!("{:?}", options);
+    loop {
+        let event = timer.get_event().await;
+
+        println!("{}", event.time);
+    }
 }
