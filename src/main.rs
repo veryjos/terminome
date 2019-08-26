@@ -1,7 +1,7 @@
 use tokio;
 
-pub mod options;
-pub mod timer;
+mod options;
+mod timer;
 
 use crate::options::Options;
 use crate::timer::{Timer, TimerEvent};
