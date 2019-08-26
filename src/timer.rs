@@ -3,7 +3,6 @@ use tokio::{self, timer::{Delay}};
 
 use crate::options::Options;
 
-
 pub enum TimerEvent {
     Tick { time: f64 }
 }
