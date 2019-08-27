@@ -1,5 +1,6 @@
 use tokio;
 
+mod glyphs;
 mod options;
 mod timer;
 mod render;
