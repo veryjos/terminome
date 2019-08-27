@@ -23,7 +23,7 @@ impl Timer {
         }
     }
 
-    pub async fn get_next_event(&mut self) -> TimerEvent {
+    pub async fn get_next_event(&self) -> TimerEvent {
         // immediately complete if time is greater than start + duration
         if self.countdown && Instant::now() >= self.start_time + self.duration {
             return TimerEvent::Complete;
