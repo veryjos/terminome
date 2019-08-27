@@ -44,7 +44,7 @@ impl Timer {
                             .unwrap_or(Duration::from_millis(0)),
 
                 false => time_elapsed,
-            }.as_secs_f64(),
+            }.as_secs_f64().round(),
         }
     }
 }
