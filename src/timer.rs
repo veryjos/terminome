@@ -33,9 +33,10 @@ impl Timer {
         // aka, at the next whole second
         let now = Instant::now();
         let wait_time = 1000 - ((now - self.start_time).as_millis() % 1000);
-        Delay::new(now + Duration::from_millis(wait_time as u64)).await;
+        let expected_time = now + Duration::from_millis(wait_time as u64);
+        Delay::new(expected_time).await;
 
-        let time_elapsed = Instant::now() - self.start_time;
+        let time_elapsed = expected_time - self.start_time;
 
         TimerEvent::Tick {
             time: match self.countdown {
