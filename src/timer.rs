@@ -35,8 +35,15 @@ impl Timer {
         let wait_time = 1000 - ((now - self.start_time).as_millis() % 1000);
         Delay::new(now + Duration::from_millis(wait_time as u64)).await;
 
+        let time_elapsed = Instant::now() - self.start_time;
+
         TimerEvent::Tick {
-            time: (Instant::now() - self.start_time).as_secs_f64()
+            time: match self.countdown {
+                true => self.duration.checked_sub(time_elapsed)
+                            .unwrap_or(Duration::from_millis(0)),
+
+                false => time_elapsed,
+            }.as_secs_f64(),
         }
     }
 }
