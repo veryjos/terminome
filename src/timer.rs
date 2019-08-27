@@ -4,7 +4,7 @@ use tokio::{self, timer::{Delay}};
 use crate::options::Options;
 
 pub enum TimerEvent {
-    Tick { time: f64 },
+    Tick { time: u64 },
     Complete,
 }
 
@@ -44,7 +44,7 @@ impl Timer {
                             .unwrap_or(Duration::from_millis(0)),
 
                 false => time_elapsed,
-            }.as_secs_f64().round(),
+            }.as_secs_f64().round() as u64,
         }
     }
 }

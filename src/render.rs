@@ -5,10 +5,10 @@ use term_size;
 
 use crate::glyphs::GLYPHS;
 
-pub fn render_time(time: f64) {
+pub fn render_time(time: u64) {
     // figure out which glyphs we need to draw
-    let minutes = (time / 60.0).floor();
-    let seconds = (time % 60.0).floor();
+    let minutes = time / 60;
+    let seconds = time % 60;
 
     let output = format!("{:02}:{:02}", minutes, seconds);
 
