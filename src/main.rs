@@ -14,7 +14,11 @@ async fn main() {
     let options = Options::from_args();
     let timer = Timer::new(&options);
 
-    while let TimerEvent::Tick { time } = timer.get_next_event().await {
+    if let TimerEvent::Tick { time } = timer.get_next_event(Some(0)).await {
+        render_time(time);
+    }
+
+    while let TimerEvent::Tick { time } = timer.get_next_event(None).await {
         render_time(time);
     }
 }

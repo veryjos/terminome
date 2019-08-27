@@ -1,4 +1,5 @@
 use std::time::{Duration, Instant};
+use std::cmp::min;
 use tokio::{self, timer::{Delay}};
 
 use crate::options::Options;
@@ -23,7 +24,7 @@ impl Timer {
         }
     }
 
-    pub async fn get_next_event(&self) -> TimerEvent {
+    pub async fn get_next_event(&self, limit: Option<u64>) -> TimerEvent {
         // immediately complete if time is greater than start + duration
         if self.countdown && Instant::now() >= self.start_time + self.duration {
             return TimerEvent::Complete;
@@ -33,7 +34,9 @@ impl Timer {
         // aka, at the next whole second
         let now = Instant::now();
         let wait_time = 1000 - ((now - self.start_time).as_millis() % 1000);
-        let expected_time = now + Duration::from_millis(wait_time as u64);
+        let expected_time = now + Duration::from_millis(
+            min(limit.unwrap_or(1000), wait_time as u64)
+        );
         Delay::new(expected_time).await;
 
         let time_elapsed = expected_time - self.start_time;
