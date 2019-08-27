@@ -25,12 +25,12 @@ impl Timer {
     }
 
     pub async fn get_next_event(&self, limit: Option<u64>) -> TimerEvent {
-        // immediately complete if time is greater than start + duration
+        // immediately resolve as completed if time is greater than start + duration
         if self.countdown && Instant::now() >= self.start_time + self.duration {
             return TimerEvent::Complete;
         }
 
-        // complete when we need to render the next frame
+        // resolve when we need to render the next frame
         // aka, at the next whole second
         let now = Instant::now();
         let wait_time = 1000 - ((now - self.start_time).as_millis() % 1000);
