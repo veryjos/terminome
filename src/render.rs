@@ -64,5 +64,6 @@ pub fn render_time(time: f64) {
     // move cursor to bottom left corner so its out of the way
     write(&format!("\x1b[{};1H", terminal_bounds.1));
 
+    // flush stdout
     write(&"\n");
 }
