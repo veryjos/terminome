@@ -34,15 +34,13 @@ pub fn render_time(time: f64) {
     write(&"\x1b[2;J");
 
     // initialize the cursor at the center position
-    let origin = {
-        let terminal_bounds = term_size::dimensions()
-            .expect("Failed to get terminal dimensions");
+    let terminal_bounds = term_size::dimensions()
+        .expect("Failed to get terminal dimensions");
 
-        (
-            (terminal_bounds.0 / 2) - (output_bounds.0 / 2),
-            (terminal_bounds.1 / 2) - (output_bounds.1 / 2),
-        )
-    };
+    let origin = (
+        (terminal_bounds.0 / 2) - (output_bounds.0 / 2),
+        (terminal_bounds.1 / 2) - (output_bounds.1 / 2),
+    );
 
     // draw each glyph
     let mut cursor = origin.clone();
@@ -62,6 +60,9 @@ pub fn render_time(time: f64) {
 
         cursor.0 += width;
     }
+
+    // move cursor to bottom left corner so its out of the way
+    write(&format!("\x1b[{};1H", terminal_bounds.1));
 
     write(&"\n");
 }
