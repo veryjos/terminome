@@ -10,7 +10,8 @@ use crate::glyphs::GLYPHS;
 pub fn render_time(time: Duration) {
     // figure out which glyphs we need to draw
     let (minutes, seconds) = {
-        let time_secs = time.as_secs();
+        // round to prevent floating point accuracy issues
+        let time_secs = time.as_secs_f64().round() as u64;
 
         (time_secs / 60, time_secs % 60)
     };
