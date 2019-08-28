@@ -1,11 +1,13 @@
-use std::time::Duration;
+use std::time::Duration as Duration;
+
+use humantime::Duration as HumanDuration;
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
 #[structopt()]
 struct CliOptions {
-    #[structopt(default_value = "Duration::from_secs(0)")]
-    time: Duration,
+    #[structopt(default_value = "0s")]
+    time: HumanDuration,
 }
 
 #[derive(Debug)]
@@ -22,9 +24,11 @@ impl Options {
 
 impl From<CliOptions> for Options {
     fn from(opt: CliOptions) -> Options {
+        let time_std_duration = opt.time.into();
+
         Options {
-            time: opt.time,
-            countdown: opt.time > Duration::from_secs(0),
+            time: time_std_duration,
+            countdown: time_std_duration > Duration::from_secs(0),
         }
     }
 }
