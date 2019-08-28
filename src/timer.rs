@@ -1,11 +1,10 @@
 use std::time::{Duration, Instant};
-use std::cmp::min;
 use tokio::{self, timer::{Delay}};
 
 use crate::options::Options;
 
 pub enum TimerEvent {
-    Tick { time: u64 },
+    Tick { time: Duration },
     Complete,
 }
 
@@ -18,36 +17,34 @@ pub struct Timer {
 impl Timer {
     pub fn new(options: &Options) -> Self {
         Timer {
-            duration: Duration::from_secs_f64(options.time),
+            duration: options.time,
             countdown: options.countdown,
             start_time: Instant::now(),
         }
     }
 
-    pub async fn get_next_event(&self, limit: u64) -> TimerEvent {
+    pub async fn get_next_event(&self) -> TimerEvent {
         // immediately resolve as completed if time is greater than start + duration
         if self.countdown && Instant::now() >= self.start_time + self.duration {
             return TimerEvent::Complete;
         }
 
-        // resolve when we need to render the next frame
+        // resolve when we need to tick
         // aka, at the next whole second
         let now = Instant::now();
-        let wait_time = 1000 - ((now - self.start_time).as_millis() % 1000);
-        let expected_time = now + Duration::from_millis(
-            min(limit, wait_time as u64)
-        );
-        Delay::new(expected_time).await;
+        let clock_time = now - self.start_time;
+        let next_tick_time = now + Duration::from_secs_f64(1.0 - (clock_time.as_secs_f64() % 1.0));
+        Delay::new(next_tick_time).await;
 
-        let time_elapsed = expected_time - self.start_time;
+        let time_elapsed = next_tick_time - self.start_time;
 
         TimerEvent::Tick {
             time: match self.countdown {
                 true => self.duration.checked_sub(time_elapsed)
-                            .unwrap_or(Duration::from_millis(0)),
+                            .unwrap_or(Duration::from_secs(0)),
 
                 false => time_elapsed,
-            }.as_secs_f64().round() as u64,
+            },
         }
     }
 }

@@ -1,15 +1,19 @@
 use std::io::{stdout, Write};
 use std::cmp::max;
 use std::cell::RefCell;
+use std::time::Duration;
 
 use term_size;
 
 use crate::glyphs::GLYPHS;
 
-pub fn render_time(time: u64) {
+pub fn render_time(time: Duration) {
     // figure out which glyphs we need to draw
-    let minutes = time / 60;
-    let seconds = time % 60;
+    let (minutes, seconds) = {
+        let time_secs = time.as_secs();
+
+        (time_secs / 60, time_secs % 60)
+    };
 
     let output = format!("{:02}:{:02}", minutes, seconds);
 
