@@ -1,5 +1,6 @@
 use std::io::{stdout, Write};
 use std::cmp::max;
+use std::cell::RefCell;
 
 use term_size;
 
@@ -21,13 +22,19 @@ pub fn render_time(time: u64) {
         .map(|glyph| (glyph[0].chars().count(), glyph.len()))
         .fold((0, 0), |acc, (width, height)| (acc.0 + width, max(acc.1, height)));
 
-    // little helper to write to the screen
-    let mut write = {
-        let mut stdout = stdout();
+    // little helper to write/flush stdout
+    let stdout = RefCell::new(stdout());
 
-        move |out: &dyn AsRef<[u8]>| {
-            stdout.write(out.as_ref()).expect("Failed to write to stdout");
-        }
+    let (write, flush) = {
+        (
+            |out: &dyn AsRef<[u8]>| {
+                stdout.borrow_mut().write(out.as_ref()).expect("Failed to write to stdout");
+            },
+            || {
+                stdout.borrow_mut().flush().expect("Faild to flush stdout");
+            }
+        )
+
     };
 
     // clear the screen
@@ -65,5 +72,5 @@ pub fn render_time(time: u64) {
     write(&format!("\x1b[{};1H", terminal_bounds.1));
 
     // flush stdout
-    write(&"\n");
+    flush();
 }
